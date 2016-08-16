@@ -8,12 +8,15 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var about = require('./routes/about');
 
 var app = express();
+var handlebars = require('express3-handlebars').create({defaultLayout:'main'});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.engine('handlebars',handlebars.engine);
+app.set('view engine', 'handlebars');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -26,10 +29,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/login',login);
+app.use('/about',about);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
- res.send("404");
+  res.status(404);
+ res.render('404');
 });
 
 // error handlers
@@ -38,11 +43,11 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
+    console.error(err.stack);
     res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    // res.render('error', {  message: err.message,error: err});
+        res.send(err.stack)
+
   });
 }
 
@@ -50,10 +55,12 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+          res.send(err.stack)
+
+  // res.render('error', {
+  //   message: err.message,
+  //   error: {}
+  // });
 });
 
 
