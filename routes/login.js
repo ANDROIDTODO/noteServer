@@ -17,7 +17,8 @@ MongoClient.connect(url, function(err, db) {
 //     console.log(dbs);
 //     db.close();
 //   });
-
+    console.log(req.query);
+    console.log(req.cookie);
 
     var col = db.collection("user",function (error,collection) {
         if (error) {  
@@ -26,7 +27,7 @@ MongoClient.connect(url, function(err, db) {
             collection.find({}).toArray(function(err,docs){
                 if(err) throw  err;
                 else{
-                    res.send(docs);
+                    res.json(docs);
                     console.log(docs);
                     db.close();
                 }
